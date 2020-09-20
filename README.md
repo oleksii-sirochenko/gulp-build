@@ -9,17 +9,18 @@ Gulp config fits very good with Wordpress project. You don't have to deal with W
 #### 1. Open terminal.
 
 #### 2. We need to start a project, step into desired directory and execute:
-
+```
 npm init
+```
 
 #### 3.Install gulp-cli if you don't have one:
-
+```
 npm install -g gulp-cli
-
+```
 #### 4. Install required packages (one line):
-
+```
 npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber gulp-notify gulp-rename del gulp-filter typescript gulp@4.0.0 browserify tsify watchify vinyl-source-stream gulp-uglify vinyl-buffer gulp-sourcemaps babelify@8 babel-core babel-preset-env gulp-append-prepend eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-
+```
 
 #### 5. Configure gulpfile.js. You can change paths to files, folders. Add different TS files to separate compiling.
 
