@@ -49,12 +49,10 @@ gulp.task('build', async () => {
     del.sync('dist/**');
     
     // move files that not required compiling from src to dist
-    gulp.src('src/css/*.css').pipe(gulp.dest('dist/css'));
-    gulp.src('src/css/libs/*.css').pipe(gulp.dest('dist/css/libs'));
-    gulp.src('src/fonts/**/*').pipe(gulp.dest('dist/fonts'));
-    gulp.src('src/js/*.js').pipe(gulp.dest('dist/js'));
-    gulp.src('src/js/libs/*.js').pipe(gulp.dest('dist/js/libs'));
-    gulp.src('src/img/**/*').pipe(gulp.dest('dist/img'));
+    gulp.src('src/css/**/*.{css,css.map}').pipe(gulp.dest('dist/css'));
+    gulp.src('src/fonts/**/*.{ttf,woff,woff2,otf,eot,svg}').pipe(gulp.dest('dist/fonts'));
+    gulp.src('src/js/**/*.{js,js.map}').pipe(gulp.dest('dist/js'));
+    gulp.src('src/img/**/*.{jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/img'));
     
     // build dist files
     gulp.series('build-ts', 'build-scss')();
