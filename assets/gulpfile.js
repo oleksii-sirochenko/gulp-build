@@ -63,12 +63,18 @@ gulp.task('build', async () => {
  */
 gulp.task('build-scss', async () => {
     const list = [
-        'src/scss/style.scss',
-        'src/scss/admin-style.scss',
+        {
+            src: 'src/scss/style.scss',
+            dist: 'dist/css'
+        },
+        {
+            src: 'src/scss/admin-style.scss',
+            dist: 'dist/css'
+        },
     ];
     
     for (let i = 0; i < list.length; i++) {
-        gulp.src(list[i])
+        gulp.src(list[i]['src'])
             .pipe(plumber({
                 errorHandler: (err) => {
                     notify.onError({
@@ -84,11 +90,11 @@ gulp.task('build-scss', async () => {
             .pipe(sass())
             .pipe(autoprefixer(['last 10 versions'], {cascade: true}))
             .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest('dist/css'))
+            .pipe(gulp.dest(list[i]['dist']))
             .pipe(filter('**/!(*.map)*.css'))
             .pipe(cleanCSS())
             .pipe(rename({suffix: '.min'}))
-            .pipe(gulp.dest('dist/css'));
+            .pipe(gulp.dest(list[i]['dist']));
     }
 });
 
