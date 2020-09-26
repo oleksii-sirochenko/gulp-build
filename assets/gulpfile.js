@@ -187,7 +187,7 @@ function getBrowserify(entries, ts) {
     return bro.transform('babelify', babelifyCfg);
 }
 
-function bundle() {
+async function bundle() {
     return this.pkg.bundle()
         .on('error', (error) => {
             console.error(error.toString());
