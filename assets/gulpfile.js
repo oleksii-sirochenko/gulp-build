@@ -3,6 +3,8 @@
  *
  * MIT License https://opensource.org/licenses/MIT
  */
+// disables notifications for ubuntu users when gulp throwing errors on incorrect SCSS styles.
+process.env.DISABLE_NOTIFIER = true;
 
 const gulp = require('gulp');
 
@@ -13,12 +15,12 @@ const plumber = require('gulp-plumber');
 const filter = require('gulp-filter');
 const notify = require('gulp-notify');
 
-// scss,css
+// SCSS,CSS
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
 
-// ts
+// TS, JS
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const tsify = require('tsify');
@@ -95,7 +97,6 @@ gulp.task('build-scss', async () => {
                         message: "Error: <%= error.message %>",
                         sound: "Basso"
                     })(err);
-                    this.emit('end');
                 }
             }))
             .pipe(sourcemaps.init())
