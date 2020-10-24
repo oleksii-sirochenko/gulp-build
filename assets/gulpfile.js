@@ -222,5 +222,7 @@ function processScripts(list, watch, ts) {
         gulp.task(task, preparedBundle);
         tasks.push(task);
     }
-    gulp.parallel(tasks)();
+    if (tasks.length) {
+        gulp.parallel(tasks)();
+    }
 }
