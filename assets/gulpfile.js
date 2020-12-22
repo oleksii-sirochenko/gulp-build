@@ -60,13 +60,13 @@ const watchify = require('watchify');
 gulp.task('build', async () => {
     // empty dist folder
     del.sync('dist/**');
-    
+
     // move files that not required compiling from src to dist
     gulp.src('src/css/**/*.{css,css.map}').pipe(gulp.dest('dist/css'));
     gulp.src('src/fonts/**/*.{ttf,woff,woff2,otf,eot,svg}').pipe(gulp.dest('dist/fonts'));
     gulp.src('src/js/**/*.{js,js.map}').pipe(gulp.dest('dist/js'));
     gulp.src('src/img/**/*.{jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/img'));
-    
+
     // build dist files
     // if you build only ts or js files you should exclude unused task
     gulp.parallel('build-js', 'build-ts', 'build-scss')();
@@ -86,7 +86,7 @@ gulp.task('build-scss', async () => {
             dist: 'dist/css'
         },
     ];
-    
+
     for (let i = 0; i < list.length; i++) {
         gulp.src(list[i]['src'])
             .pipe(plumber({
@@ -172,19 +172,20 @@ function getBrowserify(entries, ts) {
         cache: {},
         packageCache: {}
     });
-    
+
     let babelifyCfg = {
         presets: ['@babel/preset-env'],
         plugins: [
-            "@babel/plugin-proposal-class-properties",
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
         ]
     };
-    
+
     if (ts) {
         bro.plugin(tsify);
         babelifyCfg.extensions = ['.ts'];
     }
-    
+
     return bro.transform('babelify', babelifyCfg);
 }
 
