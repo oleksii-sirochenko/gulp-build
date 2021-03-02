@@ -66,6 +66,7 @@ gulp.task('build', async () => {
     gulp.src('src/fonts/**/*.{ttf,woff,woff2,otf,eot,svg}').pipe(gulp.dest('dist/fonts'));
     gulp.src('src/js/**/*.{js,js.map}').pipe(gulp.dest('dist/js'));
     gulp.src('src/img/**/*.{jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/img'));
+    gulp.src('src/libs/**/*.{css,css.map,js,jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/libs'));
 
     // build dist files
     // if you build only ts or js files you should exclude unused task
@@ -123,7 +124,7 @@ gulp.task('build-ts', tsInit.bind(null, false));
 gulp.task('watch-ts', tsInit.bind(null, true));
 
 /**
- * Builds Javascript files. Add your settings for each Typescript file that should be built separately.
+ * Builds Typescript files. Add your settings for each Typescript file that should be built separately.
  */
 async function tsInit(watch) {
     const list = [
@@ -145,17 +146,17 @@ gulp.task('build-js', jsInit.bind(null, false));
 gulp.task('watch-js', jsInit.bind(null, true));
 
 /**
- * Builds Typescript files. Add your settings for each Javascript file that should be built separately.
+ * Builds Javascript files. Add your settings for each Javascript file that should be built separately.
  */
 async function jsInit(watch) {
     const list = [
         {
-            pkg: getBrowserify('src/js/page3/page3.js', false),
+            pkg: getBrowserify('src/js/page3/page3.js'),
             filename: 'page3.js',
             dist: 'dist/js/page3',
         },
         {
-            pkg: getBrowserify('src/js/page4/page4.js', false),
+            pkg: getBrowserify('src/js/page4/page4.js'),
             filename: 'page4.js',
             dist: 'dist/js/page4',
         },
@@ -163,7 +164,7 @@ async function jsInit(watch) {
     processScripts(list, watch, false);
 }
 
-function getBrowserify(entries, ts) {
+function getBrowserify(entries, ts = false) {
     const bro = browserify({
         basedir: '.',
         ignoreWatch: ['**\/node_modules\/**'],
@@ -218,7 +219,6 @@ function processScripts(list, watch, ts) {
                     pad = (val) => val < 10 ? '0' + val : val;
                     console.log(`[${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}] Finished: ${list[i].filename} ${timeMs}ms`);
                 });
-            ;
         }
         gulp.task(task, preparedBundle);
         tasks.push(task);
