@@ -1,6 +1,6 @@
 # Gulp build
 
-Version 1.1.3
+Version 1.2.0
 
 This repository will be useful if you are going to build a small-medium tier project and you want to write your frontend in Typescript or modern Javascript with SCSS styling.
 
