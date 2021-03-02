@@ -1,6 +1,6 @@
 # Gulp build
 
-Version 1.1.2
+Version 1.1.3
 
 This repository will be useful if you are going to build a small-medium tier project and you want to write your frontend in Typescript or modern Javascript with SCSS styling.
 
@@ -55,6 +55,6 @@ npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber g
 #### Useful links:
 https://www.typescriptlang.org/docs/handbook/gulp.html
 
-Copyright (c) Aleksey Sirochenko https://github.com/alex-2077/
+Copyright (c) Alex Sirochenko https://github.com/alex-sirochenko
 
 MIT License https://opensource.org/licenses/MIT

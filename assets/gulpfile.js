@@ -1,10 +1,10 @@
 /**
- * https://github.com/alex-2077/gulp-build
+ * https://github.com/alex-sirochenko/gulp-build
  *
  * MIT License https://opensource.org/licenses/MIT
  */
-// disables notifications for ubuntu users when gulp throwing errors on incorrect SCSS styles.
-process.env.DISABLE_NOTIFIER = true;
+// nodejs
+const path = require('path');
 
 const gulp = require('gulp');
 
@@ -13,7 +13,6 @@ const rename = require('gulp-rename');
 const del = require('del');
 const plumber = require('gulp-plumber');
 const filter = require('gulp-filter');
-const notify = require('gulp-notify');
 
 // SCSS,CSS
 const sass = require('gulp-sass');
@@ -58,19 +57,23 @@ const watchify = require('watchify');
  * Builds entire frontend project
  */
 gulp.task('build', async () => {
-    // empty dist folder
+    // Empty dist folder before build.
     del.sync('dist/**');
 
-    // move files that not required compiling from src to dist
+    // Move files that not required compiling from src to dist.
     gulp.src('src/css/**/*.{css,css.map}').pipe(gulp.dest('dist/css'));
     gulp.src('src/fonts/**/*.{ttf,woff,woff2,otf,eot,svg}').pipe(gulp.dest('dist/fonts'));
     gulp.src('src/js/**/*.{js,js.map}').pipe(gulp.dest('dist/js'));
     gulp.src('src/img/**/*.{jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/img'));
     gulp.src('src/libs/**/*.{css,css.map,js,jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/libs'));
 
-    // build dist files
-    // if you build only ts or js files you should exclude unused task
-    gulp.parallel('build-js', 'build-ts', 'build-scss')();
+    // Build dist files.
+    // If you build only ts or js files you should exclude unused task.
+    gulp.parallel(
+        'build-js',
+        'build-ts',
+        'build-scss'
+    )();
 });
 
 /**
@@ -88,16 +91,18 @@ gulp.task('build-scss', async () => {
         },
     ];
 
+    processStyles(list);
+});
+
+/**
+ * Processes style files and creates files.
+ */
+function processStyles(list){
     for (let i = 0; i < list.length; i++) {
         gulp.src(list[i]['src'])
             .pipe(plumber({
                 errorHandler: (err) => {
-                    notify.onError({
-                        title: "Gulp",
-                        subtitle: "Failure!",
-                        message: "Error: <%= error.message %>",
-                        sound: "Basso"
-                    })(err);
+                    console.log(err.toString());
                 }
             }))
             .pipe(sourcemaps.init())
@@ -110,7 +115,7 @@ gulp.task('build-scss', async () => {
             .pipe(rename({suffix: '.min'}))
             .pipe(gulp.dest(list[i]['dist']));
     }
-});
+}
 
 /**
  * Watches SCSS folder for changes and invokes 'build-scss' task to process SCSS files.
@@ -130,13 +135,11 @@ async function tsInit(watch) {
     const list = [
         {
             pkg: getBrowserify('src/ts/page1/page1.ts', true),
-            filename: 'page1.js',
-            dist: 'dist/js/page1',
+            dist: 'dist/js/page1/page1.js',
         },
         {
             pkg: getBrowserify('src/ts/page2/page2.ts', true),
-            filename: 'page2.js',
-            dist: 'dist/js/page2',
+            dist: 'dist/js/page2/page2.js',
         },
     ];
     processScripts(list, watch, true);
@@ -152,29 +155,30 @@ async function jsInit(watch) {
     const list = [
         {
             pkg: getBrowserify('src/js/page3/page3.js'),
-            filename: 'page3.js',
-            dist: 'dist/js/page3',
+            dist: 'dist/js/page3/page3.js',
         },
         {
             pkg: getBrowserify('src/js/page4/page4.js'),
-            filename: 'page4.js',
-            dist: 'dist/js/page4',
+            dist: 'dist/js/page4/page4.js',
         },
     ];
     processScripts(list, watch, false);
 }
 
-function getBrowserify(entries, ts = false) {
+/**
+ * Prepares Browserify instance and returns it.
+ */
+function getBrowserify(entry, ts = false) {
     const bro = browserify({
         basedir: '.',
         ignoreWatch: ['**\/node_modules\/**'],
         debug: true,
-        entries: entries,
+        entries: entry,
         cache: {},
         packageCache: {}
     });
 
-    let babelifyCfg = {
+    const babelifyCfg = {
         presets: ['@babel/preset-env'],
         plugins: [
             '@babel/plugin-proposal-class-properties',
@@ -190,34 +194,34 @@ function getBrowserify(entries, ts = false) {
     return bro.transform('babelify', babelifyCfg);
 }
 
-async function bundle() {
-    return this.pkg.bundle()
-        .on('error', (error) => {
-            console.error(error.toString());
-        })
-        .pipe(source(this.filename))
-        .pipe(buffer())
-        .pipe(sourcemaps.init())
-        .pipe(gulp.dest(this.dist))
-        .pipe(sourcemaps.write('./'))
-        .pipe(filter('**/!(*.map)*.js'))
-        .pipe(uglify())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(this.dist));
-}
-
+/**
+ * Creates dynamic Gulp tasks, attaches Watchify to Browserify, invokes watching and run tasks which trigger files
+ * processing.
+ *
+ * @param list
+ * @param watch
+ * @param ts
+ */
 function processScripts(list, watch, ts) {
     const tasks = [];
     for (let i = 0; i < list.length; i++) {
-        const task = `build-${ts ? 'ts' : 'js'}: filename - ${list[i].filename}`;
+        const task = `build-${ts ? 'ts' : 'js'}: filename - ${path.posix.basename(list[i].dist)}`;
         const preparedBundle = bundle.bind(list[i]);
         if (watch) {
+            const browserifyPkg = list[i].pkg;
             watchify(list[i].pkg)
-                .on('update', preparedBundle)
-                .on("time", (timeMs) => {
+                .on('update', filePaths => {
+                    for (let i = 0; i < filePaths.length; i++) {
+                        if (path.posix.basename(filePaths[i]) === path.posix.basename(browserifyPkg._options.entries)) {
+                            preparedBundle();
+                            break;
+                        }
+                    }
+                })
+                .on("time", timeMs => {
                     const date = new Date();
                     pad = (val) => val < 10 ? '0' + val : val;
-                    console.log(`[${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}] Finished: ${list[i].filename} ${timeMs}ms`);
+                    console.log(`[${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}] Finished: ${path.posix.basename(list[i].dist)} ${timeMs}ms`);
                 });
         }
         gulp.task(task, preparedBundle);
@@ -226,4 +230,23 @@ function processScripts(list, watch, ts) {
     if (tasks.length) {
         gulp.parallel(tasks)();
     }
+}
+
+/**
+ * Triggers Browserify to process files.
+ */
+async function bundle() {
+    return this.pkg.bundle()
+        .on('error', (error) => {
+            console.error(error.toString());
+        })
+        .pipe(source(path.posix.basename(this.dist)))
+        .pipe(buffer())
+        .pipe(sourcemaps.init())
+        .pipe(gulp.dest(path.dirname(this.dist)))
+        .pipe(sourcemaps.write('./'))
+        .pipe(filter('**/!(*.map)*.js'))
+        .pipe(uglify())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(path.dirname(this.dist)));
 }
