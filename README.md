@@ -1,6 +1,6 @@
 # Gulp build
 
-Version 1.2.0
+Version 1.2.1
 
 This repository will be useful if you are going to build a small-medium tier project and you want to write your frontend in Typescript or modern Javascript with SCSS styling.
 
@@ -19,7 +19,7 @@ npm install -g gulp-cli
 ```
 #### 4. Install required packages (one line):
 ```
-npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber gulp-notify gulp-rename del gulp-filter typescript gulp@4.0.0 browserify tsify watchify vinyl-source-stream gulp-uglify vinyl-buffer gulp-sourcemaps babelify babel-core babel-preset-env @babel/plugin-proposal-class-properties @babel/plugin-transform-modules-commonjs gulp-append-prepend eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin ts-lint
+npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber gulp-rename del gulp-filter typescript gulp@4.0.0 browserify tsify watchify vinyl-source-stream gulp-uglify vinyl-buffer gulp-sourcemaps babelify babel-core babel-preset-env @babel/plugin-proposal-class-properties @babel/plugin-transform-modules-commonjs gulp-append-prepend eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin ts-lint
 ```
 
 #### 5. Configure gulpfile.js. You can change paths to files, folders. Add different TS or JS files to separate compiling.

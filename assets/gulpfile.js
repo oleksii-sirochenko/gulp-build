@@ -14,7 +14,7 @@ const del = require('del');
 const plumber = require('gulp-plumber');
 const filter = require('gulp-filter');
 
-// SCSS,CSS
+// SCSS, CSS
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
@@ -97,7 +97,7 @@ gulp.task('build-scss', async () => {
 /**
  * Processes style files and creates files.
  */
-function processStyles(list){
+function processStyles(list) {
     for (let i = 0; i < list.length; i++) {
         gulp.src(list[i]['src'])
             .pipe(plumber({
@@ -209,10 +209,10 @@ function processScripts(list, watch, ts) {
         const preparedBundle = bundle.bind(list[i]);
         if (watch) {
             const browserifyPkg = list[i].pkg;
-            watchify(list[i].pkg)
+            watchify(browserifyPkg)
                 .on('update', filePaths => {
                     for (let i = 0; i < filePaths.length; i++) {
-                        if (path.posix.basename(filePaths[i]) === path.posix.basename(browserifyPkg._options.entries)) {
+                        if (filePaths[i].indexOf(path.dirname(browserifyPkg._options.entries)) !== -1) {
                             preparedBundle();
                             break;
                         }
