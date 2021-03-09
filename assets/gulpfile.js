@@ -180,10 +180,11 @@ function getBrowserify(entry, ts = false) {
 
     const babelifyCfg = {
         presets: ['@babel/preset-env'],
-        plugins: [
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-transform-runtime',
-        ]
+        // todo test this with typescript
+        // plugins: [
+        //     '@babel/plugin-proposal-class-properties',
+        //     '@babel/plugin-transform-runtime',
+        // ]
     };
 
     if (ts) {
@@ -212,7 +213,9 @@ function processScripts(list, watch, ts) {
             watchify(browserifyPkg)
                 .on('update', filePaths => {
                     for (let i = 0; i < filePaths.length; i++) {
-                        if (filePaths[i].indexOf(path.dirname(browserifyPkg._options.entries)) !== -1) {
+                        const entryPath = path.dirname(browserifyPkg._options.entries).replace(/^\.{1,2}/,'');
+
+                        if (filePaths[i].indexOf(entryPath) !== -1) {
                             preparedBundle();
                             break;
                         }
@@ -220,7 +223,8 @@ function processScripts(list, watch, ts) {
                 })
                 .on("time", timeMs => {
                     const date = new Date();
-                    pad = (val) => val < 10 ? '0' + val : val;
+                    const pad = (val) => val < 10 ? '0' + val : val;
+
                     console.log(`[${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}] Finished: ${path.posix.basename(list[i].dist)} ${timeMs}ms`);
                 });
         }
