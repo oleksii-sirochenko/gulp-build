@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gulp build</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2>Gulp build</h2>
+            <p><a href="https://github.com/alex-sirochenko/gulp-build">Link to repository in Github</a></p>
+            <p>Version 1.2.2</p>
+            <p>This repository will be useful if you are going to build a small-medium tier project and you want to
+                write your frontend in Typescript or modern Javascript with SCSS styling.</p>
+            <p>Gulp config fits very good with Wordpress project. You don't have to deal with Webpack and you can start
+                development quickly.</p>
+            <ol>
+                <li>
+                    <p>Download repository</p>
+                    <div><a href="https://github.com/alex-sirochenko/gulp-build/archive/master.zip">https://github.com/alex-sirochenko/gulp-build/archive/master.zip</a>
+                    </div>
+                    <br>
+                    <p>Clone repository</p>
+                    <div class="bg-light p-3">
+                        <code>git clone https://github.com/alex-sirochenko/gulp-build.git .</code>
+                    </div>
+                    <br>
+                </li>
+                <li>
+                    <p>Open terminal.</p>
+                </li>
+                <li>
+                    <p>We need to start a project, step into desired directory and execute:</p>
+                    <p class="bg-light p-3"><code>npm init</code></p>
+                </li>
+                <li>
+                    <p>Install gulp-cli if you don't have one:</p>
+                    <p class="bg-light p-3"><code>npm install -g gulp-cli</code></p>
+                </li>
+                <li>
+                    <p>Install required packages (copy as one line):</p>
+                    <p class="bg-light p-3"><code>npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css
+                        gulp-plumber gulp-rename
+                        del gulp-filter typescript gulp@4.0.0 browserify tsify watchify@^3.0.0 vinyl-source-stream
+                        gulp-uglify vinyl-buffer gulp-sourcemaps babelify @babel/core @babel/preset-env
+                        @babel/plugin-proposal-class-properties @babel/plugin-transform-modules-commonjs
+                        @babel/plugin-transform-runtime gulp-append-prepend eslint @typescript-eslint/parser
+                        @typescript-eslint/eslint-plugin ts-lint</code></p>
+                </li>
+                <li>
+                    <p>Configure gulpfile.js. You can change paths to files, folders. Add different TS or JS files to
+                        separate compiling.</p>
+                </li>
+                <li>
+                    <p>Use available Gulp tasks to build your frontend project.</p>
+                    <pre class="bg-light p-3"><code>
+/**
+ * --------------------
+ * Available gulp tasks
+ * --------------------
+ * Project build:
+ *
+ * gulp build
+ * --------------------
+ * SCSS:
+ *
+ * gulp build-scss
+ * gulp watch-scss
+ * --------------------
+ * Typescript:
+ *
+ * gulp build-ts
+ * gulp watch-ts
+ * --------------------
+ * Javascript:
+ *
+ * gulp build-js
+ * gulp watch-js
+ * --------------------
+ */
+            </code></pre>
+                </li>
+            </ol>
+            <br><br><br>
+            <div>Useful links:</div>
+            <div><a href="https://www.typescriptlang.org/docs/handbook/gulp.html">https://www.typescriptlang.org/docs/handbook/gulp.html</a>
+            </div>
+            <p>Copyright (c) Alex Sirochenko <a href="https://github.com/alex-sirochenko">https://github.com/alex-sirochenko</a>
+            </p>
+            <p>MIT License <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
