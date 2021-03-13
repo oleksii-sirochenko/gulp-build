@@ -7,7 +7,7 @@ class Page3 {
     myProp = 99;
     
     constructor() {
-        
+
     }
     
     log() {

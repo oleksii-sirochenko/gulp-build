@@ -3,23 +3,24 @@
  *
  * MIT License https://opensource.org/licenses/MIT
  */
-// nodejs
+
+// Nodejs.
 const path = require('path');
 
 const gulp = require('gulp');
 
-// utilities
+// Utilities.
 const rename = require('gulp-rename');
 const del = require('del');
 const plumber = require('gulp-plumber');
 const filter = require('gulp-filter');
 
-// SCSS, CSS
+// SCSS, CSS.
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
 
-// TS, JS
+// TS, JS.
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const tsify = require('tsify');
@@ -27,6 +28,13 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const buffer = require('vinyl-buffer');
 const watchify = require('watchify');
+
+// Functions for build.
+const {
+    getScssFiles,
+    getTsFiles,
+    getJsFiles,
+} = require('./gulp-build');
 
 /**
  * --------------------
@@ -80,16 +88,7 @@ gulp.task('build', async () => {
  * Processes SCSS files to CSS, creates sourcemap for CSS, creates minified file of CSS.
  */
 gulp.task('build-scss', async () => {
-    const list = [
-        {
-            src: 'src/scss/style.scss',
-            dist: 'dist/css'
-        },
-        {
-            src: 'src/scss/admin-style.scss',
-            dist: 'dist/css'
-        },
-    ];
+    const list = getScssFiles();
 
     processStyles(list);
 });
@@ -132,16 +131,12 @@ gulp.task('watch-ts', tsInit.bind(null, true));
  * Builds Typescript files. Add your settings for each Typescript file that should be built separately.
  */
 async function tsInit(watch) {
-    const list = [
-        {
-            pkg: getBrowserify('src/ts/page1/page1.ts', true),
-            dist: 'dist/js/page1/page1.js',
-        },
-        {
-            pkg: getBrowserify('src/ts/page2/page2.ts', true),
-            dist: 'dist/js/page2/page2.js',
-        },
-    ];
+    const list = getTsFiles();
+
+    for (let item of list) {
+        item.pkg = getBrowserify(item.src, true);
+    }
+
     processScripts(list, watch, true);
 }
 
@@ -152,16 +147,12 @@ gulp.task('watch-js', jsInit.bind(null, true));
  * Builds Javascript files. Add your settings for each Javascript file that should be built separately.
  */
 async function jsInit(watch) {
-    const list = [
-        {
-            pkg: getBrowserify('src/js/page3/page3.js'),
-            dist: 'dist/js/page3/page3.js',
-        },
-        {
-            pkg: getBrowserify('src/js/page4/page4.js'),
-            dist: 'dist/js/page4/page4.js',
-        },
-    ];
+    const list = getJsFiles();
+
+    for (let item of list) {
+        item.pkg = getBrowserify(item.src, false);
+    }
+
     processScripts(list, watch, false);
 }
 
@@ -180,11 +171,10 @@ function getBrowserify(entry, ts = false) {
 
     const babelifyCfg = {
         presets: ['@babel/preset-env'],
-        // todo test this with typescript
-        // plugins: [
-        //     '@babel/plugin-proposal-class-properties',
-        //     '@babel/plugin-transform-runtime',
-        // ]
+        plugins: [
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-runtime',
+        ]
     };
 
     if (ts) {
@@ -209,24 +199,7 @@ function processScripts(list, watch, ts) {
         const task = `build-${ts ? 'ts' : 'js'}: filename - ${path.posix.basename(list[i].dist)}`;
         const preparedBundle = bundle.bind(list[i]);
         if (watch) {
-            const browserifyPkg = list[i].pkg;
-            watchify(browserifyPkg)
-                .on('update', filePaths => {
-                    for (let i = 0; i < filePaths.length; i++) {
-                        const entryPath = path.dirname(browserifyPkg._options.entries).replace(/^\.{1,2}/,'');
-
-                        if (filePaths[i].indexOf(entryPath) !== -1) {
-                            preparedBundle();
-                            break;
-                        }
-                    }
-                })
-                .on("time", timeMs => {
-                    const date = new Date();
-                    const pad = (val) => val < 10 ? '0' + val : val;
-
-                    console.log(`[${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}] Finished: ${path.posix.basename(list[i].dist)} ${timeMs}ms`);
-                });
+            addWatchify(list[i], preparedBundle);
         }
         gulp.task(task, preparedBundle);
         tasks.push(task);
@@ -237,7 +210,7 @@ function processScripts(list, watch, ts) {
 }
 
 /**
- * Triggers Browserify to process files.
+ * Create Browserify bundle. Triggers Browserify to process files. Returns Browserify bundle.
  */
 async function bundle() {
     return this.pkg.bundle()
@@ -253,4 +226,37 @@ async function bundle() {
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(path.dirname(this.dist)));
+}
+
+/**
+ * Adds Watchify plugin to Browserify bundle with TS or JS files.
+ *
+ * @param listItem Contains Browserify pkg, src, dist of a file.
+ * @param preparedBundle Browserify bundle.
+ */
+function addWatchify(listItem, preparedBundle) {
+    const browserifyPkg = listItem.pkg;
+    const dist = listItem.dist;
+
+    watchify(browserifyPkg)
+        .on('update', filePaths => {
+            for (let i = 0; i < filePaths.length; i++) {
+                const entryPath = path.dirname(browserifyPkg._options.entries).replace(/^\.{1,2}/, '');
+
+                if (filePaths[i].indexOf(entryPath) !== -1) {
+                    preparedBundle();
+                    break;
+                }
+            }
+        })
+        .on("time", timeMs => {
+            const date = new Date();
+            const pad = (val) => val < 10 ? '0' + val : val;
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+            const seconds = pad(date.getSeconds());
+            const folder = path.posix.basename(dist);
+
+            console.log(`[${hours}:${minutes}:${seconds}] Finished: ${folder} ${timeMs}ms`);
+        });
 }

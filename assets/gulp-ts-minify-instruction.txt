@@ -15,10 +15,10 @@ npm install -g gulp-cli
 
 #4. Install required packages (copy one line):
 
-npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber gulp-rename del gulp-filter typescript gulp@4.0.0 browserify tsify watchify@^3.0.0 vinyl-source-stream gulp-uglify vinyl-buffer gulp-sourcemaps babelify @babel/core @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-transform-modules-commonjs @babel/plugin-transform-runtime gulp-append-prepend eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin ts-lint
+npm install --save-dev gulp-sass gulp-autoprefixer gulp-clean-css gulp-plumber gulp-rename del gulp-filter typescript gulp@^4.0.0 browserify tsify watchify@^3.0.0 vinyl-source-stream gulp-uglify vinyl-buffer gulp-sourcemaps babelify @babel/core @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-transform-modules-commonjs @babel/plugin-transform-runtime gulp-append-prepend eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin ts-lint
 
 
-#5. Configure gulpfile.js. You can change paths to files, folders. Add different TS or JS files to separate compiling.
+#5. Configure gulpfile.js, gulp-build.js. You can change paths to files, folders. Add different TS or JS files to separate compiling.
 
 #6. Use available Gulp tasks to build your frontend project.
 

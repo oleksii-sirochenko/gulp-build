@@ -2,6 +2,9 @@
  *
  */
 class Page1 {
+
+    protected hello = 'world';
+
     constructor() {
 
     }
