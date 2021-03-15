@@ -66,7 +66,7 @@ const {
  */
 gulp.task('build', async () => {
     // Empty dist folder before build.
-    del.sync('dist/**');
+    del.sync('dist/**', {force: true});
 
     // Move files that not required compiling from src to dist.
     gulp.src('src/css/**/*.{css,css.map}').pipe(gulp.dest('dist/css'));
