@@ -46,7 +46,7 @@ exports.getTsFiles = () => {
     ];
 
     return list;
-}
+};
 
 /**
  * Returns list of objects used in build-js, watch-js gulp tasks.
@@ -66,4 +66,4 @@ exports.getJsFiles = () => {
     ];
 
     return list;
-}
+};

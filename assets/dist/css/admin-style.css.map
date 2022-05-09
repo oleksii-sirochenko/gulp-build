@@ -1,1 +1,1 @@
-{"version":3,"sources":["admin-style.scss"],"names":[],"mappings":"AAAA;EACE,iBAAiB,EAAA","file":"admin-style.css","sourcesContent":["body {\n  margin-top: 100px;\n}"]}
+{"version":3,"sources":["admin-style.scss","admin-style.css"],"names":[],"mappings":"AAAA;EACE,iBAAA;ACCF","file":"admin-style.css","sourcesContent":["body {\n  margin-top: 100px;\n}","body {\n  margin-top: 100px;\n}"]}

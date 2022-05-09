@@ -16,7 +16,7 @@ const plumber = require('gulp-plumber');
 const filter = require('gulp-filter');
 
 // SCSS, CSS.
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
 
@@ -162,7 +162,10 @@ async function jsInit(watch) {
 function getBrowserify(entry, ts = false) {
     const bro = browserify({
         basedir: '.',
-        ignoreWatch: ['**\/node_modules\/**'],
+        ignoreWatch: [
+            '**\/node_modules\/**',
+            './ng-app\/**'
+        ],
         debug: true,
         entries: entry,
         cache: {},
