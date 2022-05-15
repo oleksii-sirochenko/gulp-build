@@ -1,5 +1,5 @@
 /**
- * https://github.com/alex-sirochenko/gulp-build
+ * https://github.com/oleksii-sirochenko/gulp-build
  *
  * MIT License https://opensource.org/licenses/MIT
  */
@@ -68,12 +68,7 @@ gulp.task('build', async () => {
     // Empty dist folder before build.
     del.sync('dist/**', {force: true});
 
-    // Move files that not required compiling from src to dist.
-    gulp.src('src/css/**/*.{css,css.map}').pipe(gulp.dest('dist/css'));
-    gulp.src('src/fonts/**/*.{ttf,woff,woff2,otf,eot,svg}').pipe(gulp.dest('dist/fonts'));
-    gulp.src('src/js/**/*.{js,js.map}').pipe(gulp.dest('dist/js'));
-    gulp.src('src/img/**/*.{jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/img'));
-    gulp.src('src/libs/**/*.{css,css.map,js,jpeg,jpg,png,gif,svg}').pipe(gulp.dest('dist/libs'));
+    copyFilesFromSrcToDist();
 
     // Build dist files.
     // If you build only ts or js files you should exclude unused task.
@@ -83,6 +78,35 @@ gulp.task('build', async () => {
         'build-scss'
     )();
 });
+
+/**
+ * Set of instructions to copy files from 'src' to 'dist' folder.
+ */
+function copyFilesFromSrcToDist() {
+    const cssExts = ['css', 'css.map'];
+    const fontExts = ['ttf', 'woff', 'woff2', 'otf', 'eot', 'svg'];
+    const imgExts = ['jpeg', 'jpg', 'png', 'gif', 'svg', 'ico', 'webmanifest'];
+    const jsExts = ['js'];
+    const libsExts = [
+        ...cssExts,
+        ...fontExts,
+        ...jsExts,
+        // Put your additional libs files extensions here.
+    ].filter(filterUnique);
+
+    // Copy files from 'src' to 'dist' that don't require compiling.
+    gulp.src(`src/css/**/*.{${cssExts.join(',')}}`).pipe(gulp.dest('dist/css'));
+    gulp.src(`src/fonts/**/*.{${fontExts.join(',')}}`).pipe(gulp.dest('dist/fonts'));
+    gulp.src(`src/img/**/*.{${imgExts.join(',')}}`).pipe(gulp.dest('dist/img'));
+    gulp.src(`src/libs/**/*.{${libsExts.join(',')}}`).pipe(gulp.dest('dist/libs'));
+}
+
+/**
+ * Array filter helper. Used with Array.filter to leave only unique values.
+ */
+function filterUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
 
 /**
  * Processes SCSS files to CSS, creates sourcemap for CSS, creates minified file of CSS.
